@@ -9,7 +9,8 @@
     "registry-auth": "npx google-artifactregistry-auth",
     "clean": "rimraf dist/*",
     "copy": "copyfiles views/** dist && copyfiles public/** dist",
-    "test": "jest --forceExit --maxWorkers=10 "
+    "test": "jest --forceExit --maxWorkers=10 ",
+    "test-coverage": "jest --coverage --forceExit --maxWorkers=10"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
     "@types/supertest": "^2.0.11",
     "babel-jest": "^27.3.1",
     "copyfiles": "^2.4.1",
+    "jest-sonar-reporter": "^2.0.0",
     "jest": "^27.3.1",
     "nodemon": "^2.0.14",
     "rimraf": "^3.0.2",
