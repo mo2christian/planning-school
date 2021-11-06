@@ -1,0 +1,39 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: planning-school
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '2'
+    spec:
+      containerConcurrency: 80
+      serviceAccountName: planning-school@driving-monlabo-biz.iam.gserviceaccount.com
+      timeoutSeconds: 300
+      containers:
+      - env:
+        - name: MONGO_USER
+          value: planning
+        - name: MONGO_PWD
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: DB_PASSWORD
+        - name: MONGO_LINK
+          value: planning-dev.dqieh.mongodb.net/base?retryWrites=true&w=majority
+        - name: NODE_ENV
+          value: production
+        - name: ZIPKIN_ENDPOINT
+          value: https://zipkin.monlabo.biz
+        image: europe-west1-docker.pkg.dev/driving-monlabo-biz/planning/planning-school:main
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 512Mi
+
+

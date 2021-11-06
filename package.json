@@ -1,0 +1,67 @@
+{
+  "name": "planning-school",
+  "version": "1.0.0",
+  "description": "Web app for school managers",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon server.ts",
+    "build": "npm run clean && tsc  --project ./ && npm run copy",
+    "registry-auth": "npx google-artifactregistry-auth",
+    "clean": "rimraf dist/*",
+    "copy": "copyfiles views/** dist && copyfiles public/** dist",
+    "test": "jest --forceExit --maxWorkers=10 "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mo2christian/planning-school.git"
+  },
+  "keywords": [
+    "planning",
+    "school"
+  ],
+  "author": "Christian N. Momo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mo2christian/planning-school/issues"
+  },
+  "homepage": "https://github.com/mo2christian/planning-school#readme",
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/connect-mongo": "^3.1.3",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/jest": "^27.0.2",
+    "@types/mustache": "^4.1.2",
+    "@types/mustache-express": "^1.2.1",
+    "@types/node": "^16.11.4",
+    "@types/passport": "^1.0.7",
+    "@types/supertest": "^2.0.11",
+    "babel-jest": "^27.3.1",
+    "copyfiles": "^2.4.1",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
+    "rimraf": "^3.0.2",
+    "supertest": "^6.1.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@driving/planning-client-api": "^1.0.1",
+    "connect-mongo": "^4.6.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.0.12",
+    "mustache-express": "^1.3.2",
+    "node-fetch": "^2.6.2",
+    "passport": "^0.5.0",
+    "passport-custom": "^1.1.1",
+    "zipkin": "^0.22.0",
+    "zipkin-context-cls": "^0.22.0",
+    "zipkin-instrumentation-express": "^0.22.0",
+    "zipkin-transport-http": "^0.22.0"
+  }
+}
