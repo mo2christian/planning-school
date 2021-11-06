@@ -30,6 +30,7 @@ export class ZipkinConfig{
                 logger: new HttpLogger({
                     endpoint: `${this.zipkinUrl}/api/v2/spans`,
                     jsonEncoder: jsonEncoder.JSON_V2,
+                    timeout: 3000
                 }),
             }),
             localServiceName: "planning-school",
