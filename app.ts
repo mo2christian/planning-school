@@ -7,6 +7,12 @@ import { Auth } from './routes/auth';
 import { SecurityConfig, SessionConfig, ZipkinConfig } from './config/config';
 import path from 'path';
 
+
+declare global {
+    var MONGO_URL: string;
+    var ZIPKIN_URL: string;
+} 
+
 export const app = express();
 app.set('views', path.join(__dirname, "views"));
 app.set('view engine', 'mustache');
@@ -19,12 +25,14 @@ app.use(express.static(path.join(__dirname, "public")));
 //session config
 const user = process.env.MONGO_USER || 'planning';
 const pwd = process.env.MONGO_PWD || 'pwd';
-const link = process.env.MONGO_LINK || 'localhost:27017/phanning-school'
-const planningUrl = process.env.PLANNING_API || 'https://planning-api.monlabo.biz/';
+const link = process.env.MONGO_LINK || 'localhost:27017/planning-school'
 const sessionSecret = process.env.SESSION_SECRET || 'secret';
 let mongoUrl = `mongodb://${link}`;
 if (process.env.NODE_ENV == 'production'){
     mongoUrl = `mongodb+srv://${user}:${pwd}@${link}`;
+}
+if (process.env.NODE_ENV == 'test'){
+    mongoUrl = `mongodb://${global.MONGO_URL}`;
 }
 
 //session config
@@ -32,12 +40,16 @@ const sessionConfig: SessionConfig = new SessionConfig(mongoUrl, sessionSecret);
 sessionConfig.initialize(app);
 
 //security config
+const planningUrl = process.env.PLANNING_API || 'https://planning-api.monlabo.biz/';
 const securityConfig = new SecurityConfig(planningUrl);
 securityConfig.initialize(app);
 
 //zipkin config
-const ZIPKIN_ENDPOINT = process.env.ZIPKIN_ENDPOINT || "http://localhost:9411";
-const zipkinConfig = new ZipkinConfig(ZIPKIN_ENDPOINT);
+let zipkinEndpoint = process.env.ZIPKIN_ENDPOINT || "http://localhost:9411";
+if (process.env.NODE_ENV == 'test'){
+    zipkinEndpoint = `http://${global.ZIPKIN_URL}`;
+}
+const zipkinConfig = new ZipkinConfig(zipkinEndpoint);
 zipkinConfig.initialize(app);
 
 //define common variables
@@ -64,6 +76,12 @@ app.post('/login',
     (req, res) => {
         //do nothing
     });
+
+
+app.use((err: Error, req: Request, res: Response, next: any) => {
+    console.log(err.stack);
+    next(err);
+});
 
 function loggedIn(req: Request, res: Response, next: any){
     if (req.isAuthenticated()){
