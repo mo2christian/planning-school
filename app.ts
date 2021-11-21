@@ -4,7 +4,8 @@ import mustache from 'mustache-express';
 import passport from 'passport';
 import { welcome }  from './routes/dashboard';
 import { Auth } from './routes/auth';
-import { SecurityConfig, SessionConfig, ZipkinConfig } from './config/config';
+import { SecurityConfig, SessionConfig, ZipkinConfig } from './config';
+import { SchoolRoute } from './routes/school';
 import path from 'path';
 
 
@@ -22,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "public")));
 
-//session config
+//get env parameters
 const user = process.env.MONGO_USER || 'planning';
 const pwd = process.env.MONGO_PWD || 'pwd';
 const link = process.env.MONGO_LINK || 'localhost:27017/planning-school'
@@ -70,6 +71,10 @@ app.get('/logout', loggedIn, (req, res) => {
     req.logOut();
     res.redirect('/login');
 })
+
+const schoolRoute = new SchoolRoute(planningUrl);
+app.get('/school', schoolRoute.createView)
+app.post('/school', schoolRoute.createValidation(), schoolRoute.create);
 
 app.post('/login', 
     passport.authenticate('planning-auth', { failureRedirect: '/login', successRedirect: '/'}), 
