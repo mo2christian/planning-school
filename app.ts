@@ -1,11 +1,12 @@
 import express, { Request, Response} from 'express';
 import cookieParser from 'cookie-parser';
-import mustache from 'mustache-express';
 import passport from 'passport';
+import { create } from 'express-handlebars';
 import { welcome }  from './routes/dashboard';
 import { Auth } from './routes/auth';
 import { SecurityConfig, SessionConfig, ZipkinConfig } from './config';
 import { SchoolRoute } from './routes/school';
+import { MonitorRoute } from './routes/monitor';
 import path from 'path';
 
 
@@ -14,10 +15,16 @@ declare global {
     var ZIPKIN_URL: string;
 } 
 
+const hbs = create({
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, "views/layouts"),
+    extname: '.hbs',
+})
+
 export const app = express();
 app.set('views', path.join(__dirname, "views"));
-app.set('view engine', 'mustache');
-app.engine('mustache', mustache());
+app.engine('hbs', hbs.engine);
+app.set('view engine', 'hbs');
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -62,11 +69,13 @@ app.use((req, res, next) => {
 
 //define routes
 const auth = new Auth(planningUrl);
-
 app.get('/',  loggedIn, welcome);
-
 app.get('/login', auth.loginPage);
-
+app.post('/login', 
+    passport.authenticate('planning-auth', { failureRedirect: '/login', successRedirect: '/'}), 
+    (req, res) => {
+        //do nothing
+    });
 app.get('/logout', loggedIn, (req, res) => {
     req.logOut();
     res.redirect('/login');
@@ -76,13 +85,11 @@ const schoolRoute = new SchoolRoute(planningUrl);
 app.get('/school', schoolRoute.createView)
 app.post('/school', schoolRoute.createValidation(), schoolRoute.create);
 
-app.post('/login', 
-    passport.authenticate('planning-auth', { failureRedirect: '/login', successRedirect: '/'}), 
-    (req, res) => {
-        //do nothing
-    });
+const monitorRoute = new MonitorRoute(planningUrl);
+app.get('/monitor', loggedIn, monitorRoute.list)
+app.post('/monitor', loggedIn, monitorRoute.createValidation(), monitorRoute.create)
 
-
+//handle errors
 app.use((err: Error, req: Request, res: Response, next: any) => {
     console.log(err.stack);
     next(err);

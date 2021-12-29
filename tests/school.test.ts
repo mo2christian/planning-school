@@ -2,6 +2,7 @@
  import request from 'supertest';
  import { app } from '../app';
  import { DrivingSchoolApi, Text } from '@driving/planning-client-api';
+import { check } from 'express-validator';
 
 
  jest.setTimeout(20000)
@@ -130,3 +131,4 @@ describe('Test School creation page', () => {
     })
 
 })
+

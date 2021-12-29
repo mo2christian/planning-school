@@ -1,0 +1,40 @@
+<div class="container">
+    {{#errors}}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>{{param}}</strong> {{msg}}
+        </div>
+    {{/errors}}
+
+    <form action="/school" method="post">
+        <div class="form-group">
+            <label> Email : </label>
+            <input type="text" name="email" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> Password: </label>
+            <input type="password" name="password" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> Name: </label>
+            <input type="text" name="name" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> Phone Number: </label>
+            <input type="text" name="phoneNumber" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> Adress: </label>
+            <input type="text" name="path" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> Postal Code: </label>
+            <input type="number" name="postalCode" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label> town: </label>
+            <input type="text" name="town" class="form-control"/>
+        </div>
+        <button type="Create" class="btn btn-default">Submit</button>
+    </form> 
+</div>

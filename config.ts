@@ -79,6 +79,7 @@ export class SecurityConfig{
             })
             .then(ans => {
                 const profile = new UserProfile(req.body.username, school);
+                req.session.user = profile
                 done(null, profile)
             });
     }
